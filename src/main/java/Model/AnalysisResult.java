@@ -8,9 +8,8 @@ public class AnalysisResult {
     // Basic Counts
     private final int wordCount;
     private final int charCountWithSpaces;
-    private final int charCountWithoutSpaces;
     private final int paragraphCount;
-    private final int sequenceCount;
+    private final int sentenceCount;
     private final int uniqueWordCount;
 
     // Derived Stats
@@ -25,16 +24,16 @@ public class AnalysisResult {
     private final List<Integer> sentenceLengths; // a list where each element is the word count of one sentence
 
 
-    public AnalysisResult(int wordCount, int charCountWithSpaces, int charCountWithoutSpaces, int paragraphCount,
-                          int sequenceCount, int uniqueWordCount, double averageWordLength, double averageSentenceLength,
+    public AnalysisResult(int wordCount, int charCountWithSpaces, int paragraphCount,
+                          int sentenceCount, int uniqueWordCount, double averageWordLength, double averageSentenceLength,
                           double readingTimeSeconds, double fleschReadingEase,
                           Map<String, Integer> wordFrequency, Map<Character, Integer> charFrequency,
                           List<Integer> sentenceLengths) {
         this.wordCount = wordCount;
         this.charCountWithSpaces = charCountWithSpaces;
-        this.charCountWithoutSpaces = charCountWithoutSpaces;
+        //this.charCountWithoutSpaces = charCountWithoutSpaces;
         this.paragraphCount = paragraphCount;
-        this.sequenceCount = sequenceCount;
+        this.sentenceCount = sentenceCount;
         this.uniqueWordCount = uniqueWordCount;
         this.averageWordLength = averageWordLength;
         this.averageSentenceLength = averageSentenceLength;
@@ -54,16 +53,13 @@ public class AnalysisResult {
         return charCountWithSpaces;
     }
 
-    public int getCharCountWithoutSpaces(){
-        return charCountWithoutSpaces;
-    }
 
     public int getParagraphCount(){
         return paragraphCount;
     }
 
-    public int getSequenceCount(){
-        return sequenceCount;
+    public int getSentenceCount(){
+        return sentenceCount;
     }
 
     public int getUniqueWordCount(){
