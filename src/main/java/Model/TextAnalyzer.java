@@ -115,13 +115,49 @@ public final class TextAnalyzer {
         int numberOfSentences = sentenceLengths.size();
         double averageSentenceLength = (double)totalSentenceLengths / numberOfSentences;
         double readingTime = wordCount / (200.0 * 60);
+        double fleschReadingEase = 206.835 - (1.015 * averageSentenceLength) - (84.6 * countSyllables(wordList));
 
+        return new AnalysisResult(wordCount, characterCountWithSpaces, paragraphCount, numberOfSentences,
+                uniqueWordCount, averageWordLength, averageSentenceLength, readingTime, fleschReadingEase, wordFreqMap,
+                characterFreqMap, sentenceLengths);
 
     }
 
     // Helpers
-    private static int countSyllables(String text){
-        String normalizedText = text.toLowerCase().trim();
+    private static double countSyllables(ArrayList<String> text){
+        Set<String> vowels = new HashSet<>(Arrays.asList("a", "e", "i", "o", "u", "y"));
+        int totalSyllables = 0;
+        for (String word : text){
+            char[] charArray = word.toCharArray();
+            int syllableCount = 0;
+            boolean previousVowel = false;
+            for (int i = 0; i < charArray.length; i++){
+                char currChar = charArray[i];
+                if (vowels.contains(Character.toString(currChar))){
+                    if (!previousVowel){
+                        previousVowel = true;
+                        syllableCount++;
+                    }
+                } else {
+                    previousVowel = false;
+                }
+            }
+
+            if (word.endsWith("e")){
+                boolean hasConsonantLeEnding = word.endsWith("le") && word.length() >= 3 &&
+                        !vowels.contains(Character.toString(word.charAt(word.length() - 3)));
+                if (!hasConsonantLeEnding && syllableCount > 1){
+                    syllableCount--;
+                }
+            }
+            if (syllableCount < 1){
+                syllableCount = 1;
+            }
+
+            totalSyllables += syllableCount;
+        }
+        double averageSyllables = (double) totalSyllables / text.size();
+        return averageSyllables;
 
     }
 
