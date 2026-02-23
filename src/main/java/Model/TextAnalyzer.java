@@ -21,13 +21,18 @@ public final class TextAnalyzer {
     private TextAnalyzer(){}
 
     public static AnalysisResult analyze(String text){
-        if (text == null || text.length() == 0){
+        if (text == null){
             return new AnalysisResult(0, 0, 0,
                     0, 0, 0, 0, 0,
                     0, null, null, null);
         }
         int paragraphCount = 0;
         String textNormalized = text.toLowerCase().trim();
+        if (textNormalized.length() == 0){
+            return new AnalysisResult(0, 0, 0,
+                    0, 0, 0, 0, 0,
+                    0, null, null, null);
+        }
         textNormalized = textNormalized.replace("\r\n", "\n");
         textNormalized = textNormalized.replace("\r", "\n");
         ArrayList<String> allParagraphsArray = new ArrayList<>(Arrays.asList(textNormalized.split("\\n\\s*\\n")));
@@ -53,7 +58,7 @@ public final class TextAnalyzer {
             Collections.addAll(sentencesArray, trimmedSentences);
         }
 
-        int characterCountWithSpaces = 0;
+        int characterCountWithoutSpaces = 0;
         ArrayList<String> wordList = new ArrayList<>();
         for (String sentence : sentencesArray){
             String[] words = sentence.split("\\s+");
@@ -62,7 +67,7 @@ public final class TextAnalyzer {
                 if (!currWord.isEmpty() && currWord.matches(".*[a-zA-Z0-9]+.*")){
                     currWord = currWord.replaceAll("^[^a-zA-Z0-9]+", "");
                     currWord = currWord.replaceAll("[^a-zA-Z0-9]+$", "");
-                    characterCountWithSpaces += currWord.length();
+                    characterCountWithoutSpaces += currWord.length();
                     wordList.add(currWord);
                 }
             }
@@ -114,10 +119,10 @@ public final class TextAnalyzer {
         int totalSentenceLengths = sentenceLengths.stream().mapToInt(Integer::intValue).sum();
         int numberOfSentences = sentenceLengths.size();
         double averageSentenceLength = (double)totalSentenceLengths / numberOfSentences;
-        double readingTime = wordCount / (200.0 * 60);
+        double readingTime = (wordCount / 200.0) * 60;
         double fleschReadingEase = 206.835 - (1.015 * averageSentenceLength) - (84.6 * countSyllables(wordList));
 
-        return new AnalysisResult(wordCount, characterCountWithSpaces, paragraphCount, numberOfSentences,
+        return new AnalysisResult(wordCount, characterCountWithoutSpaces, paragraphCount, numberOfSentences,
                 uniqueWordCount, averageWordLength, averageSentenceLength, readingTime, fleschReadingEase, wordFreqMap,
                 characterFreqMap, sentenceLengths);
 

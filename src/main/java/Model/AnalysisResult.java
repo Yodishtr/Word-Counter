@@ -7,7 +7,7 @@ public class AnalysisResult {
 
     // Basic Counts
     private final int wordCount;
-    private final int charCountWithSpaces;
+    private final int charCountWithoutSpaces;
     private final int paragraphCount;
     private final int sentenceCount;
     private final int uniqueWordCount;
@@ -24,13 +24,13 @@ public class AnalysisResult {
     private final List<Integer> sentenceLengths; // a list where each element is the word count of one sentence
 
 
-    public AnalysisResult(int wordCount, int charCountWithSpaces, int paragraphCount,
+    public AnalysisResult(int wordCount, int charCountWithoutSpaces, int paragraphCount,
                           int sentenceCount, int uniqueWordCount, double averageWordLength, double averageSentenceLength,
                           double readingTimeSeconds, double fleschReadingEase,
                           Map<String, Integer> wordFrequency, Map<Character, Integer> charFrequency,
                           List<Integer> sentenceLengths) {
         this.wordCount = wordCount;
-        this.charCountWithSpaces = charCountWithSpaces;
+        this.charCountWithoutSpaces = charCountWithoutSpaces;
         //this.charCountWithoutSpaces = charCountWithoutSpaces;
         this.paragraphCount = paragraphCount;
         this.sentenceCount = sentenceCount;
@@ -49,8 +49,8 @@ public class AnalysisResult {
         return wordCount;
     }
 
-    public int getCharCountWithSpaces(){
-        return charCountWithSpaces;
+    public int getCharCountWithoutSpaces(){
+        return charCountWithoutSpaces;
     }
 
 
