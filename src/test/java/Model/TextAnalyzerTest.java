@@ -3,6 +3,8 @@ package Model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -134,5 +136,69 @@ public class TextAnalyzerTest {
 
     }
 
+    @Test
+    void punctuationOnlytest(){
+        String punctuationText = "Hello --- ... world!!!";
+        AnalysisResult result = TextAnalyzer.analyze(punctuationText);
 
+        assertEquals(2, result.getWordCount(), "word count");
+        assertEquals(10, result.getCharCountWithoutSpaces(), "char count with spaces");
+        assertEquals(1, result.getParagraphCount(), "paragraph count");
+        assertEquals(2, result.getSentenceCount(), "sentence count");
+        assertEquals(2, result.getUniqueWordCount(), "unique word count");
+
+        assertEquals(5.0, result.getAverageWordLength());
+        assertEquals(1.5, result.getAverageSentenceLength());
+        assertEquals(0.6, result.getReadingTimeSeconds());
+
+        double minValue = 0.0;
+        double maxValue = 130.0;
+        boolean withinRange = (result.getFleschReadingEase() >= minValue && result.getFleschReadingEase() <= maxValue);
+        Assertions.assertTrue(withinRange);
+
+        Map<String, Integer> wordFrequencyMap = result.getWordFrequency();
+        assertEquals(2, wordFrequencyMap.size());
+        assertEquals(1, wordFrequencyMap.get("hello"));
+        assertEquals(1, wordFrequencyMap.get("world"));
+
+        Map<Character, Integer> characterFrequencyMap = result.getCharFrequency();
+        assertEquals(7, characterFrequencyMap.size());
+        assertEquals(1, characterFrequencyMap.get('h'));
+        assertEquals(1, characterFrequencyMap.get('e'));
+        assertEquals(3, characterFrequencyMap.get('l'));
+        assertEquals(2, characterFrequencyMap.get('o'));
+        assertEquals(1, characterFrequencyMap.get('w'));
+        assertEquals(1, characterFrequencyMap.get('r'));
+        assertEquals(1, characterFrequencyMap.get('d'));
+
+        Assertions.assertFalse(characterFrequencyMap.containsKey(' '));
+        Assertions.assertFalse(characterFrequencyMap.containsKey('.'));
+
+        List<Integer> sentenceLengthsList = result.getSentenceLengths();
+        assertEquals(2, sentenceLengthsList.size(), "sentence lengths size");
+        assertEquals(2, sentenceLengthsList.get(0), "first element in sentence lengths list");
+    }
+
+    @Test
+    void paragraphSplittingTest(){
+        String paragraphText = "A.\n\nB.";
+        AnalysisResult result = TextAnalyzer.analyze(paragraphText);
+
+        assertEquals(2, result.getWordCount(), "word count");
+        assertEquals(2, result.getCharCountWithoutSpaces(), "char count with spaces");
+        assertEquals(2, result.getParagraphCount(), "paragraph count");
+        assertEquals(2, result.getSentenceCount(), "sentence count");
+    }
+
+    @Test
+    void sentenceLengthTest(){
+        String sentenceLengthText = "One two. Three four five.";
+        AnalysisResult result = TextAnalyzer.analyze(sentenceLengthText);
+
+        List<Integer> sentenceLengthsList = result.getSentenceLengths();
+        assertEquals(2, sentenceLengthsList.size());
+        assertEquals(2.5, result.getAverageSentenceLength());
+        List<Integer> expectedSentenceLengthsList = new ArrayList<>(Arrays.asList(2, 3));
+        assertEquals(expectedSentenceLengthsList, sentenceLengthsList);
+    }
 }

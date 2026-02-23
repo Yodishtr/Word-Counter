@@ -35,6 +35,7 @@ public final class TextAnalyzer {
         }
         textNormalized = textNormalized.replace("\r\n", "\n");
         textNormalized = textNormalized.replace("\r", "\n");
+
         ArrayList<String> allParagraphsArray = new ArrayList<>(Arrays.asList(textNormalized.split("\\n\\s*\\n")));
         ArrayList<String> textParagraphsArray = new ArrayList<>();
         for (String paragraph : allParagraphsArray){
