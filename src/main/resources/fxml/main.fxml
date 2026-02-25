@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.CustomMenuItem?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane fx:controller="Controller.MainController" fx:id="mainBorderPane"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="720.0" prefWidth="900.0">
+
+    <!-- The menu bar -->
+    <top>
+        <MenuButton text="File">
+            <items>
+                <CustomMenuItem hideOnClick="false">
+                    <content>
+                        <Button text="New Tab" onAction="#handleNewTabAction" fx:id="newTabButtonMenu"/>
+                    </content>
+                </CustomMenuItem>
+                <CustomMenuItem hideOnClick="false">
+                    <content>
+                        <Button text="Open File" onAction="#handleOpenFileAction" fx:id="openFileButtonMenu"/>
+                    </content>
+                </CustomMenuItem>
+                <CustomMenuItem>
+                    <content>
+                        <Button text="Save Text" onAction="#handleSaveTextAction" fx:id="saveTextButtonMenu"/>
+                    </content>
+                </CustomMenuItem>
+                <CustomMenuItem>
+                    <content>
+                        <Button text="Save Analysis Report" onAction="#handleSaveAnalysisReportAction"
+                            fx:id="saveAnalysisReportButtonMenu"/>
+                    </content>
+                </CustomMenuItem>
+            </items>
+        </MenuButton>
+        <Separator orientation="VERTICAL"/>
+        <MenuButton>
+            <items>
+                <CustomMenuItem hideOnClick="false">
+                    <content>
+                        <Button text="Undo" onAction="#handleUndoAction" fx:id="undoButtonMenu"/>
+                    </content>
+                </CustomMenuItem>
+                <CustomMenuItem>
+                    <content>
+                        <Button text="Redo" onAction="#handleRedoAction" fx:id="redoButtonMenu"/>
+                    </content>
+                </CustomMenuItem>
+            </items>
+        </MenuButton>
+        <Separator orientation="VERTICAL"/>
+        <Button text="View" onAction="#handleViewAnalysisReportAction" fx:id="viewButtonMenu"/>
+    </top>
+
+    <!-- Document tab -->
+    <center>
+        <TabPane fx:id="tabPane"/>
+    </center>
+
+    <!-- Quick Stats tab -->
+    <right>
+        <VBox prefWidth="250">
+            <Label text="Statistics"/>
+            <Separator orientation="HORIZONTAL"/>
+            <HBox>
+                <Label text="Word Count: "/>
+                <Label fx:id="wordCountData"/>
+            </HBox>
+            <HBox>
+                <Label text="Total Characters: "/>
+                <Label fx:id="characterCountData"/>
+            </HBox>
+            <HBox>
+                <Label text="Sentence Count: "/>
+                <Label fx:id="sentenceCountData"/>
+            </HBox>
+            <HBox>
+                <Label text="Paragraph Count: "/>
+                <Label fx:id="paragraphCountData"/>
+            </HBox>
+            <Button text="View Full Analysis" fx:id="viewFullAnalysisStatsButton"
+                    onAction="#handleViewAnalysisReportAction"/>
+        </VBox>
+    </right>
+
+    <!-- Live Word count -->
+    <bottom>
+        <HBox>
+            <Label text="Words: "/>
+            <Label fx:id="statusLabel"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
