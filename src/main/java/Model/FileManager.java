@@ -45,7 +45,7 @@ public final class FileManager {
 
     public static String loadTextFromFile(File file) throws IOException{
         StringBuffer buffer = new StringBuffer();
-        FileReader fileReader = new FileReader(file);
+        FileReader fileReader = new FileReader(file, StandardCharsets.UTF_8);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String currLine;
         while ((currLine = bufferedReader.readLine()) != null){
