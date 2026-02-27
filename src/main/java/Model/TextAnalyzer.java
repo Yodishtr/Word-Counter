@@ -167,5 +167,56 @@ public final class TextAnalyzer {
 
     }
 
+    public static int countWords(String text){
+        if (text == null){ return 0;}
+        String textNormalized = text.toLowerCase().trim();
+        textNormalized = textNormalized.replaceAll("[\\r\\n]+\\s*", " ");
+        String[] words = textNormalized.split("\\s+");
+        return words.length;
+    }
+
+    public static int paragraphCount(String text){
+        if (text == null){
+            return 0;
+        }
+        String textNormalized = text.toLowerCase().trim();
+        textNormalized = textNormalized.replace("\r\n", "\n");
+        textNormalized = textNormalized.replace("\r", "\n");
+        ArrayList<String> allParagraphs = new ArrayList<>(Arrays.asList(textNormalized.split("\\n\\s*\\n")));
+        int paragraphCount = 0;
+        for (String paragraph : allParagraphs){
+            paragraph = paragraph.trim();
+            if (!paragraph.isEmpty()){
+                paragraphCount++;
+            }
+        }
+        return paragraphCount;
+    }
+
+    public static int sentenceCount(String text){
+        if (text == null){
+            return 0;
+        }
+        String textNormalized = text.toLowerCase().trim();
+        textNormalized = textNormalized.replace("\r\n", "\n");
+        textNormalized = textNormalized.replace("\r", "\n");
+        ArrayList<String> allParagraphs = new ArrayList<>(Arrays.asList(textNormalized.split("\\n\\s*\\n")));
+        int sentenceCount = 0;
+        for (String paragraph : allParagraphs){
+            paragraph = paragraph.trim();
+            if (!paragraph.isEmpty()){
+                String[] sentences = paragraph.split("[.!?]+\\s");
+                for (String sentence : sentences){
+                    sentence = sentence.trim();
+                    if (!sentence.isEmpty()){
+                        sentenceCount++;
+                    }
+                }
+            }
+        }
+        return sentenceCount;
+
+    }
+
 
 }

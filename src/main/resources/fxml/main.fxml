@@ -74,10 +74,6 @@
                 <Label fx:id="wordCountData"/>
             </HBox>
             <HBox>
-                <Label text="Total Characters: "/>
-                <Label fx:id="characterCountData"/>
-            </HBox>
-            <HBox>
                 <Label text="Sentence Count: "/>
                 <Label fx:id="sentenceCountData"/>
             </HBox>
