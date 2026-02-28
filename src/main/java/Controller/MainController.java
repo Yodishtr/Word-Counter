@@ -1,17 +1,25 @@
 package Controller;
 
 import Model.AnalysisResult;
+import Model.FileManager;
 import Model.TextAnalyzer;
 import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,12 +33,18 @@ public class MainController {
 
     private int tabCounter = 1;
     private Map<Tab, TextArea> tabTextAreaMap = new HashMap<>();
+    private Stage currStage;
     private Map<Tab, AnalysisResult> tabAnalysisMap = new HashMap<>();
 
     public void initialize() {
         createNewTab();
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             updateStatsLabels();
+        });
+        tabPane.sceneProperty().addListener((observable, oldValue, newValue) ->{
+            if (newValue != null){
+                currStage = (Stage) tabPane.getScene().getWindow();
+            }
         });
     }
 
@@ -91,6 +105,130 @@ public class MainController {
         statusLabel.setText(String.valueOf(wordCountVal));
         paragraphCountData.setText(String.valueOf(TextAnalyzer.paragraphCount(currText)));
         sentenceCountData.setText(String.valueOf(TextAnalyzer.sentenceCount(currText)));
+    }
+
+    @FXML
+    private void handleNewTabAction(ActionEvent event){
+        createNewTab();
+    }
+
+    @FXML
+    private void handleOpenFileAction(ActionEvent event){
+        if (currStage == null){
+            return;
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+        );
+        File file = fileChooser.showOpenDialog(currStage);
+        if (file != null){
+            try{
+                String fileContent = FileManager.loadTextFromFile(file);
+                Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+                TextArea currTextArea = tabTextAreaMap.get(currTab);
+                currTextArea.setText(fileContent);
+            } catch (IOException ioException){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("An error occurred");
+                alert.setHeaderText("There was an issue loading text from file");
+                alert.setContentText(ioException.getMessage());
+                alert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    private void handleSaveTextAction(ActionEvent event){
+        if (currStage == null){
+            return;
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Text");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+        );
+        File file = fileChooser.showSaveDialog(currStage);
+        if (file != null){
+            try {
+                Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+                TextArea currTextArea = tabTextAreaMap.get(currTab);
+                String textAreaContent = currTextArea.getText();
+                FileManager.saveTextToFile(textAreaContent, file);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Save Text");
+                alert.setHeaderText("Text Saved Successfully");
+                alert.setContentText("Your work was saved successfully in a file");
+                alert.showAndWait();
+            } catch (IOException ioException){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("An error occurred");
+                alert.setHeaderText("There was an issue saving text to file");
+                alert.setContentText(ioException.getMessage());
+                alert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    private void handleSaveAnalysisReportAction(ActionEvent event){
+        if (currStage == null){
+            return;
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Text");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+        );
+        File file = fileChooser.showSaveDialog(currStage);
+        if (file != null){
+            Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+            TextArea currTextArea = tabTextAreaMap.get(currTab);
+            AnalysisResult analysisResult = TextAnalyzer.analyze(currTextArea.getText());
+            String tabName = currTab.getText();
+            tabAnalysisMap.put(currTab, analysisResult);
+            try {
+                FileManager.saveAnalysisReport(analysisResult, tabName, file);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Save Analysis.");
+                alert.setHeaderText("Analysis Report Saved Successfully.");
+                alert.setContentText("The analysise of your work was saved successfully.");
+            } catch (IOException ioException){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("An error occurred.");
+                alert.setHeaderText("There was an issue saving analysis report.");
+                alert.setContentText(ioException.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void handleViewAnalysisReportAction(ActionEvent event){
+        if (currStage == null){
+            return;
+        }
+        Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+        TextArea currTextArea = tabTextAreaMap.get(currTab);
+        String currTabName = currTab.getText();
+        if (currTextArea.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("An error occurred");
+            alert.setHeaderText("There was an issue viewing analysis report.");
+            alert.setContentText("No text to analyse. Please enter something.");
+            alert.showAndWait();
+        } else {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("analysis.fxml"));
+            AnalysisController analysisController = fxmlLoader.getController();
+            AnalysisResult analysisResult = TextAnalyzer.analyze(currTextArea.getText());
+            analysisController.loadAnalysis(analysisResult, currTabName);
+            Stage analysisStage = new Stage();
+            analysisStage.setTitle("Analysis Report: " + currTabName);
+            Scene analysisScene = new Scene(fxmlLoader.getRoot(), 800, 800);
+            analysisStage.setScene(analysisScene);
+            analysisStage.show();
+        }
+
     }
 
 }
