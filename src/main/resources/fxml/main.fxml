@@ -42,20 +42,6 @@
                 </items>
             </MenuButton>
             <Separator orientation="VERTICAL"/>
-            <MenuButton text="Actions">
-                <items>
-                    <CustomMenuItem hideOnClick="false">
-                        <content>
-                            <Button text="Undo" onAction="#handleUndoAction" fx:id="undoButtonMenu"/>
-                        </content>
-                    </CustomMenuItem>
-                    <CustomMenuItem hideOnClick="false">
-                        <content>
-                            <Button text="Redo" onAction="#handleRedoAction" fx:id="redoButtonMenu"/>
-                        </content>
-                    </CustomMenuItem>
-                </items>
-            </MenuButton>
             <Separator orientation="VERTICAL"/>
             <Button text="View" onAction="#handleViewAnalysisReportAction" fx:id="viewButtonMenu"/>
         </HBox>
@@ -83,8 +69,6 @@
                 <Label text="Paragraph Count: "/>
                 <Label fx:id="paragraphCountData"/>
             </HBox>
-            <Button text="View Full Analysis" fx:id="viewFullAnalysisStatsButton"
-                    onAction="#handleViewAnalysisReportAction"/>
         </VBox>
     </right>
 

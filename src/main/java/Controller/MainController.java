@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -219,35 +220,25 @@ public class MainController {
             alert.showAndWait();
         } else {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/analysis.fxml"));
-            AnalysisController analysisController = fxmlLoader.getController();
-            AnalysisResult analysisResult = TextAnalyzer.analyze(currTextArea.getText());
-            analysisController.loadAnalysis(analysisResult, currTabName);
-            Stage analysisStage = new Stage();
-            analysisStage.setTitle("Analysis Report: " + currTabName);
-            Scene analysisScene = new Scene(fxmlLoader.getRoot(), 800, 800);
-            analysisStage.setScene(analysisScene);
-            analysisStage.show();
+            try {
+                Parent root = fxmlLoader.load();
+                AnalysisController analysisController = fxmlLoader.getController();
+                AnalysisResult analysisResult = TextAnalyzer.analyze(currTextArea.getText());
+                analysisController.loadAnalysis(analysisResult, currTabName);
+                Stage analysisStage = new Stage();
+                analysisStage.setTitle("Analysis Report: " + currTabName);
+                Scene analysisScene = new Scene(root, 800, 800);
+                analysisStage.setScene(analysisScene);
+                analysisStage.show();
+            } catch (IOException ioException){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("An error occurred");
+                alert.setHeaderText("There was an issue viewing analysis report.");
+                alert.setContentText(ioException.getMessage());
+                alert.showAndWait();
+            }
         }
     }
 
-    @FXML
-    private void handleUndoAction(ActionEvent event){
-        if (currStage == null){
-            return;
-        }
-        Tab currTab = tabPane.getSelectionModel().getSelectedItem();
-        TextArea currTextArea = tabTextAreaMap.get(currTab);
-        currTextArea.undo();
-    }
-
-    @FXML
-    private void handleRedoAction(ActionEvent event){
-        if (currStage == null){
-            return;
-        }
-        Tab currTab = tabPane.getSelectionModel().getSelectedItem();
-        TextArea currTextArea = tabTextAreaMap.get(currTab);
-        currTextArea.redo();
-    }
 
 }
