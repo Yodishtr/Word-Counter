@@ -1,3 +1,9 @@
 Launcher.class
+MainApp.class
+Model/AnalysisResult.class
+Controller/MainController.class
+Model/FileManager.class
 Model/WordCountRows.class
+Model/TextAnalyzer.class
+Controller/AnalysisController.class
 Controller/MainController$1.class
