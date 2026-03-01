@@ -4,6 +4,8 @@ import Model.AnalysisResult;
 import Model.FileManager;
 import Model.TextAnalyzer;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -40,11 +42,31 @@ public class MainController {
     public void initialize() {
         createNewTab();
         tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            updateStatsLabels();
+            if (newValue != null) {
+                updateStatsLabels();
+            } else {
+                wordCountData.setText(String.valueOf(0));
+                statusLabel.setText(String.valueOf(0));
+                paragraphCountData.setText(String.valueOf(0));
+                sentenceCountData.setText(String.valueOf(0));
+            }
+
         });
         tabPane.sceneProperty().addListener((observable, oldValue, newValue) ->{
             if (newValue != null){
-                currStage = (Stage) tabPane.getScene().getWindow();
+                newValue.windowProperty().addListener((obs, oldWindow, newWindow) ->{
+                    if (newWindow != null){
+                        currStage = (Stage) newWindow;
+                    }
+                });
+            }
+        });
+        tabPane.getTabs().addListener((ListChangeListener<Tab>) c -> {
+            if (c.getList().isEmpty()){
+                Platform.runLater(() -> {
+                    createNewTab();
+                });
+
             }
         });
     }
@@ -66,7 +88,9 @@ public class MainController {
             pauseTransition.playFromStart();
         });
         StackPane stackPane = new StackPane(currTextArea);
-        Tab currTab = new Tab("Document " + tabCounter++, stackPane);
+        String defaultName = "Document " + tabCounter++;
+        Tab currTab = new Tab(defaultName, stackPane);
+        currTab.setUserData(defaultName);
         Label tabName = new Label(currTab.getText());
         currTab.setText(null);
         currTab.setGraphic(tabName);
@@ -84,22 +108,36 @@ public class MainController {
                             if (currName.isEmpty()){
                                 currName = "Untitled";
                             }
-                            Label updatedName = new Label(currName);
-                            currTab.setGraphic(updatedName);
+                            tabName.setText(currName);
+                            currTab.setUserData(currName);
+                            currTab.setGraphic(tabName);
                         });
                     }
                 }
             }
         });
+
         tabPane.getTabs().add(currTab);
-        tabPane.getSelectionModel().select(currTab);
         tabTextAreaMap.put(currTab, currTextArea);
-        currTab.setOnClosed(event -> tabTextAreaMap.remove(currTab));
+        tabPane.getSelectionModel().select(currTab);
+        currTab.setOnClosed(event -> {
+            tabTextAreaMap.remove(currTab);
+        });
     }
 
     public void updateStatsLabels(){
         Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+        if (currTab == null){
+            return;
+        }
         TextArea currTextArea = tabTextAreaMap.get(currTab);
+        if (currTextArea == null){
+            wordCountData.setText(String.valueOf(0));
+            statusLabel.setText(String.valueOf(0));
+            paragraphCountData.setText(String.valueOf(0));
+            sentenceCountData.setText(String.valueOf(0));
+            return;
+        }
         String currText = currTextArea.getText();
         int wordCountVal = TextAnalyzer.countWords(currText);
         wordCountData.setText(String.valueOf(wordCountVal));
@@ -187,7 +225,7 @@ public class MainController {
             Tab currTab = tabPane.getSelectionModel().getSelectedItem();
             TextArea currTextArea = tabTextAreaMap.get(currTab);
             AnalysisResult analysisResult = TextAnalyzer.analyze(currTextArea.getText());
-            String tabName = currTab.getText();
+            String tabName = (String) currTab.getUserData();
             tabAnalysisMap.put(currTab, analysisResult);
             try {
                 FileManager.saveAnalysisReport(analysisResult, tabName, file);
@@ -211,7 +249,7 @@ public class MainController {
         }
         Tab currTab = tabPane.getSelectionModel().getSelectedItem();
         TextArea currTextArea = tabTextAreaMap.get(currTab);
-        String currTabName = currTab.getText();
+        String currTabName = (String) currTab.getUserData();
         if (currTextArea.getText().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("An error occurred");
