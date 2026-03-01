@@ -1,0 +1,83 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<BorderPane fx:controller="Controller.AnalysisController" fx:id="analysisBorderPane"
+            xmlns:fx="http://javafx.com/fxml"
+            prefWidth="900.0" prefHeight="900.0">
+    <top>
+        <Label text="Current tab: "/>
+        <Label fx:id="tabNameLabel"/>
+    </top>
+    <center>
+        <!-- Word Frequency bar chart -->
+        <BarChart fx:id="wordFreqBarChart" title="Word Frequency">
+            <xAxis>
+                <CategoryAxis fx:id="wordLabelXAxis" label="Words"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="wordFreqYAxis" label="Frequency"/>
+            </yAxis>
+        </BarChart>
+
+        <!-- Character Frequency Bar Chart -->
+        <BarChart fx:id="charFreqBarChart" title="Character Frequency">
+            <xAxis>
+                <CategoryAxis fx:id="charLabelXAxis" label="Characters"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="charFreqYAxis" label="Frequency"/>
+            </yAxis>
+        </BarChart>
+
+        <!-- Sentence Lengths -->
+        <BarChart fx:id="sentenceLengthsHistogram" title="Sentence Lengths">
+            <xAxis>
+                <CategoryAxis fx:id="sentenceXAxis" label="Sentences"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis fx:id="sentenceLengthFreq" label="Frequency"/>
+            </yAxis>
+        </BarChart>
+
+        <!-- FleschScore / Readability Score -->
+        <VBox>
+            <HBox>
+                <Label text="Readability Score: "/>
+                <Label fx:id="fleschScore"/>
+            </HBox>
+            <Label text="Over 90: Easily understood by an average 11-year-old student (5th-grade) "/>
+            <Label text="80–90 (Easy): Conversational English, suitable for 6th-grade readers."/>
+            <Label text="70–80 (Fairly Easy): 7th-grade level, comfortable for most readers."/>
+            <Label text="60–70 (Standard/Plain English): Easily understood by 13- to 15-year-old students 8th–9th grade).
+            Ideal for web content."/>
+            <Label text="50–60 (Fairly Difficult): 10th to 12th-grade level."/>
+            <Label text="30–50 (Difficult): College level, academic, or professional, typically 18-19"/>
+            <Label text="0–30 (Very Difficult): Academic papers, complex technical manuals, or legal documents;
+            best for university graduates."/>
+        </VBox>
+
+        <!-- top words table -->
+        <TableView fx:id="tableView">
+            <TableColumn fx:id="wordsColumn" text="Words">
+                <cellValueFactory>
+                    <PropertyValueFactory property="words"/>
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="countsColumn" text="Count">
+                <cellValueFactory>
+                    <PropertyValueFactory property="count"/>
+                </cellValueFactory>
+            </TableColumn>
+        </TableView>
+    </center>
+
+</BorderPane>

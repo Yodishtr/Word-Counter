@@ -218,7 +218,7 @@ public class MainController {
             alert.setContentText("No text to analyse. Please enter something.");
             alert.showAndWait();
         } else {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("analysis.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/analysis.fxml"));
             AnalysisController analysisController = fxmlLoader.getController();
             AnalysisResult analysisResult = TextAnalyzer.analyze(currTextArea.getText());
             analysisController.loadAnalysis(analysisResult, currTabName);
@@ -228,7 +228,26 @@ public class MainController {
             analysisStage.setScene(analysisScene);
             analysisStage.show();
         }
+    }
 
+    @FXML
+    private void handleUndoAction(ActionEvent event){
+        if (currStage == null){
+            return;
+        }
+        Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+        TextArea currTextArea = tabTextAreaMap.get(currTab);
+        currTextArea.undo();
+    }
+
+    @FXML
+    private void handleRedoAction(ActionEvent event){
+        if (currStage == null){
+            return;
+        }
+        Tab currTab = tabPane.getSelectionModel().getSelectedItem();
+        TextArea currTextArea = tabTextAreaMap.get(currTab);
+        currTextArea.redo();
     }
 
 }

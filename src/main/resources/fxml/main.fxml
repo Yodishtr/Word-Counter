@@ -15,48 +15,50 @@
 
     <!-- The menu bar -->
     <top>
-        <MenuButton text="File">
-            <items>
-                <CustomMenuItem hideOnClick="false">
-                    <content>
-                        <Button text="New Tab" onAction="#handleNewTabAction" fx:id="newTabButtonMenu"/>
-                    </content>
-                </CustomMenuItem>
-                <CustomMenuItem hideOnClick="false">
-                    <content>
-                        <Button text="Open File" onAction="#handleOpenFileAction" fx:id="openFileButtonMenu"/>
-                    </content>
-                </CustomMenuItem>
-                <CustomMenuItem>
-                    <content>
-                        <Button text="Save Text" onAction="#handleSaveTextAction" fx:id="saveTextButtonMenu"/>
-                    </content>
-                </CustomMenuItem>
-                <CustomMenuItem>
-                    <content>
-                        <Button text="Save Analysis Report" onAction="#handleSaveAnalysisReportAction"
-                            fx:id="saveAnalysisReportButtonMenu"/>
-                    </content>
-                </CustomMenuItem>
-            </items>
-        </MenuButton>
-        <Separator orientation="VERTICAL"/>
-        <MenuButton>
-            <items>
-                <CustomMenuItem hideOnClick="false">
-                    <content>
-                        <Button text="Undo" onAction="#handleUndoAction" fx:id="undoButtonMenu"/>
-                    </content>
-                </CustomMenuItem>
-                <CustomMenuItem>
-                    <content>
-                        <Button text="Redo" onAction="#handleRedoAction" fx:id="redoButtonMenu"/>
-                    </content>
-                </CustomMenuItem>
-            </items>
-        </MenuButton>
-        <Separator orientation="VERTICAL"/>
-        <Button text="View" onAction="#handleViewAnalysisReportAction" fx:id="viewButtonMenu"/>
+        <HBox>
+            <MenuButton text="File">
+                <items>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Button text="New Tab" onAction="#handleNewTabAction" fx:id="newTabButtonMenu"/>
+                        </content>
+                    </CustomMenuItem>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Button text="Open File" onAction="#handleOpenFileAction" fx:id="openFileButtonMenu"/>
+                        </content>
+                    </CustomMenuItem>
+                    <CustomMenuItem>
+                        <content>
+                            <Button text="Save Text" onAction="#handleSaveTextAction" fx:id="saveTextButtonMenu"/>
+                        </content>
+                    </CustomMenuItem>
+                    <CustomMenuItem>
+                        <content>
+                            <Button text="Save Analysis Report" onAction="#handleSaveAnalysisReportAction"
+                                fx:id="saveAnalysisReportButtonMenu"/>
+                        </content>
+                    </CustomMenuItem>
+                </items>
+            </MenuButton>
+            <Separator orientation="VERTICAL"/>
+            <MenuButton text="Actions">
+                <items>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Button text="Undo" onAction="#handleUndoAction" fx:id="undoButtonMenu"/>
+                        </content>
+                    </CustomMenuItem>
+                    <CustomMenuItem hideOnClick="false">
+                        <content>
+                            <Button text="Redo" onAction="#handleRedoAction" fx:id="redoButtonMenu"/>
+                        </content>
+                    </CustomMenuItem>
+                </items>
+            </MenuButton>
+            <Separator orientation="VERTICAL"/>
+            <Button text="View" onAction="#handleViewAnalysisReportAction" fx:id="viewButtonMenu"/>
+        </HBox>
     </top>
 
     <!-- Document tab -->
